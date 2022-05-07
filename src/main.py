@@ -1,10 +1,10 @@
 import vk_api, datetime
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
-from topsecret import token, longpoll
-import query
+from query import match as check, vk_session, longpoll
 
-vk_session = vk_api.VkApi(token=token)
-longpoll = VkBotLongPoll(vk_session, longpoll)
+
+def sender(cid, text):
+	vk_session.method("messages.send", {"chat_id": cid, "message": text, "random_id": 0})
 
 
 # def change_percentage(event):
@@ -31,7 +31,7 @@ while True:
 				if event.type == VkBotEventType.MESSAGE_NEW:
 					print(event.chat_id)
 					msg = event.message["text"].lower()
-					query.match(event.chat_id, msg)
+					check(event.chat_id, msg)
 			except Exception as exexex:
 				print(exexex)
 	except KeyboardInterrupt:

@@ -1,8 +1,10 @@
-import get, main
+import get
+import vk_api
+from vk_api.bot_longpoll import VkBotLongPoll
+from topsecret import token, longpoll
 
-
-def sender(cid, text):
-	main.vk_session.method("messages.send", {"chat_id": cid, "message": text, "random_id": 0})
+vk_session = vk_api.VkApi(token=token)
+longpoll = VkBotLongPoll(vk_session, longpoll)
 
 
 def match(chat_id, msg):
@@ -15,3 +17,5 @@ def match(chat_id, msg):
 def match_get(chat_id, query):
 	if query in ("помощь", "команды"):
 		get.help(chat_id)
+	elif query == "сколько":
+		get.persentage(chat_id);

@@ -1,4 +1,4 @@
-from query import sender
+import datetime
 
 instruction = """Команды
 [name] - опциональные параметры
@@ -29,3 +29,11 @@ SET-запросы
 
 def help(chat_id):
 	sender(chat_id, instruction)
+
+
+def persentage(chat_id):
+	hm = (datetime.datetime.now() - datetime.datetime(2021, 9, 1)).total_seconds() / 31536000
+	if hm >= 1:
+		sender(chat_id, "Ну вот и всё, прощай лето... 100%")
+	else:
+		sender(chat_id, str(hm * 100) + '%')
