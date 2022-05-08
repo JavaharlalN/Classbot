@@ -18,7 +18,7 @@ class Lesson:
 
 
 class Timetable:
-	def default(self):
+	def __init__(self):
 		self.monday = [
 			Lesson("История", (8, 30)),
 			Lesson("История", (9, 20)),
@@ -127,3 +127,6 @@ class Timetable:
 		end = self.when()
 		if now.hour > end[0] and now.minute > end[1]:
 			return self.hw_to_date(datetime(now.year, now.month, now.day) + delta(1))
+
+	def select(self, lesson, homework):
+		[t[0].as_tuple() for t in homework if t[0].name == lesson]

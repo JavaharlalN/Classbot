@@ -1,3 +1,4 @@
+from datetime import timedelta as delta
 import datetime
 from functions import sender
 
@@ -13,6 +14,7 @@ GET-запросы
 ?(пн/среда) - показать расписание на указанный день
 ?сколько - получить % (без обновления названия беседы)
 ?анекдот - получить анекдот
+?напоминания - показать список напоминаний в формате "текст, день.месяц, минута:час, индекс, повторять (да/нет), периодичность (в днях)"
 
 SET-запросы  
 !дз.предмет.день.месяц.задание - записать дз на заданное число
@@ -23,9 +25,23 @@ SET-запросы
 !напомнить.текст.день.[месяц].[час].[минута] - напомнить один раз в указанное время. по умолчанию 7 часов 0 минут. Возвращает индекс напоминания.
 !напоминать.текст.[час].[минута].[период] - напоминать каждый день (зависит от периода: 1 - повторять каждый день; 2 - повторять каждые два дня, т.е. через день и т.д.). По умолчанию - напоминать раз в день в 7 часов 0 минут. Возвращает индекс напоминания.
 !удалить.[индекс] - удалить напоминание. Если не указать индекс, удалит последнее
-!напоминания - показать список напоминаний в формате "текст, день.месяц, минута:час, индекс, повторять (да/нет), периодичность (в днях)"
 !формат.<формат> - установить формат показа напоминаний (для !напоминания)
 """
+
+weekdays = {
+	"пн": 0,
+	"вт": 1,
+	"ср": 2,
+	"чт": 3,
+	"пт": 4,
+	"сб": 5,
+	"понедельник": 0,
+	"вторник": 1,
+	"среда": 2,
+	"четверг": 3,
+	"пятница": 4,
+	"суббота": 5,
+}
 
 
 def help(chat_id):
@@ -33,14 +49,59 @@ def help(chat_id):
 
 
 def persentage(chat_id):
-	hm = (datetime.datetime.now() - datetime.datetime(2021, 9, 1)).total_seconds() / 31536000
+	hm = (datetime.now() - datetime(2021, 9, 1)).total_seconds() / 31536000
 	if hm >= 1:
 		sender(chat_id, "Ну вот и всё, прощай лето... 100%")
 	else:
 		sender(chat_id, str(hm * 100) + '%')
+
 
 def nearest_hw(chat_id, timetable):
 	timetable.update()
 	hw = timetable.nearest_hw()
 	if hw:
 		sender(chat_id, "\n".join(f"{t[0]}, {t[1]}" for t in hw))
+
+
+def homework(chat_id, timetable, parameters):
+	date = datetime.date.today()
+	if len(parameters) in (1, 2):
+		if parameters[0] == "завтра":
+			hw = timetable.hw_to_date(date + delta(1))
+		elif parameters[0] == "послезавтра":
+			hw = timetable.hw_to_date(date + delta(2))
+		elif parameters[0] == "вчера":
+			hw = timetable.hw_to_date(date + delta(-1))
+		elif parameters[0] == "позавчера":
+			hw = timetable.hw_to_date(date + delta(-2))
+		elif parameters[0] in weekdays:
+			diff = weekdays[parameters[0]] - date.weekday()  # need - today
+			if diff > 0:
+				hw = timetable.hw_to_date(date + delta(diff))
+			else:
+				hw = timetable.hw_to_date(date + delta(7 + diff))
+		elif parameters[0].isdigit() and parameters[1].isdigit():
+			d = parameters[0]
+			m = parameters[1]
+			date_need = datetime.datetime(date.year + (1 if m < 6 else 0), m, d)
+			sender(chat_id, timetable.hw_to_date(date + (date - date_need).days))
+			return
+		else:
+			sender(chat_id, "не понял")
+			return
+		if len(parameters) == 2:
+			hw = timetable.select(parameters[1], hw)
+	elif len(parameters) == 3 and parameters[0].isdigit() and parameters[1].isdigit():
+		d = parameters[0]
+		m = parameters[1]
+		date_need = datetime.datetime(date.year + (1 if m < 6 else 0), m, d)
+		h = timetable.hw_to_date(date + (date - date_need).days);
+		sender(chat_id, timetable.select(parameters[2], h))
+		return
+	else:
+		sender(chat_id, "слишком много параметров")
+		return
+	if hw:
+		sender(chat_id, "\n".join(map(lambda t: f"{t[0]}, {t[1]}", hw)))
+	else:
+		sender(chat_id, "не задано")

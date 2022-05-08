@@ -15,3 +15,5 @@ def match_get(chat_id, query, timetable):
 		get.persentage(chat_id);
 	elif query == "дз":
 		get.nearest_hw(chat_id, timetable)
+	elif query.startswith("дз") and len(query.split('.')) > 1:
+		get.homework(chat_id, timetable, query.split('.')[1:])

@@ -20,9 +20,10 @@ from data import Timetable
 
 
 while True:
-	now = datetime.datetime.now() + datetime.timedelta(hours=3)
+	now = datetime.datetime.now()
 	print(now)
-	timetable = Timetable.default()
+	print(str((datetime.datetime.now() - datetime.datetime(2021, 9, 1)).total_seconds() / 315360) + '%')
+	timetable = Timetable()
 	try:
 		for event in longpoll.check():
 			try:
