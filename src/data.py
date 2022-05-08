@@ -72,12 +72,15 @@ class Timetable:
 		self.hemework = []  # tuple(Lesson, datetime.strptime(%d-%m-%Y))
 
 	def save(self):
-		con = sqlite3.connect("homework.db")
+		con = sqlite3.connect("data.db")
 		cur = con.cursor()
+		cur.execute("TRUNCATE TABLE IF EXIST timetable")
+		cur.execute("TRUNCATE TABLE IF EXIST homework")
 		cur.execute(f"""CREATE TABLE IF NOT EXIST timetable
 							(day text, lesson text)""")
 		cur.execute(f"""CREATE TABLE IF NOT EXIST homework
 							(lesson text, task text, date text)""")
+		cur.commit()
 		for lesson in self.monday:
 			cur.execute(f"""INSERT INTO timetable VALUES ("Понедельник", {lesson.name})""")
 		for lesson in self.tuesday:
@@ -94,6 +97,7 @@ class Timetable:
 			cur.execute(f"""INSERT INTO homework VALUES
 								({task[0].name}, {task[0].homework}, {task[1].strftime("%d-%m-%Y")})""")
 		cur.commit()
+		con.close()
 
 	def update(self):
 		pass
