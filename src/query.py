@@ -1,10 +1,4 @@
 import get
-import vk_api
-from vk_api.bot_longpoll import VkBotLongPoll
-from topsecret import token, longpoll
-
-vk_session = vk_api.VkApi(token=token)
-longpoll = VkBotLongPoll(vk_session, longpoll)
 
 
 def match(chat_id, msg):

@@ -1,11 +1,7 @@
 import vk_api, datetime
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
-from query import match as check, vk_session, longpoll
-
-
-def sender(cid, text):
-	vk_session.method("messages.send", {"chat_id": cid, "message": text, "random_id": 0})
-
+from query import match as check
+from functions import longpoll
 
 # def change_percentage(event):
 #	 hm = (datetime.datetime.now() + datetime.timedelta(hours=6) - datetime.datetime(2021, 9, 1)).total_seconds() / 31536000

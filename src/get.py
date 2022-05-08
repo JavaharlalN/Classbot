@@ -1,4 +1,5 @@
 import datetime
+from functions import sender
 
 instruction = """Команды
 [name] - опциональные параметры
