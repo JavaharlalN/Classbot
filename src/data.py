@@ -1,4 +1,5 @@
 import sqlite3
+from datetime import datetime, timedelta as delta
 
 
 class Lesson:
@@ -7,9 +8,17 @@ class Lesson:
 		self.start = start
 		self.homework = ""
 
+	def end(self):
+		h = self.start[0] + self.start[1] // 60  # hours
+		m = self.start[1] % 60  # minutes
+		return (h, m)
+
+	def as_tuple(self):
+		return (self.name, self.homework)
+
 
 class Timetable:
-	def default(self, id):
+	def default(self):
 		self.monday = [
 			Lesson("История", (8, 30)),
 			Lesson("История", (9, 20)),
@@ -60,7 +69,7 @@ class Timetable:
 			Lesson("Практикум по математике", (14, 20)),
 		]
 		self.saturday = []
-		self.hemework = []  # tuple(Lesson, datetime.datetime.strptime(%d-%m-%Y))
+		self.hemework = []  # tuple(Lesson, datetime.strptime(%d-%m-%Y))
 
 	def save(self):
 		con = sqlite3.connect("homework.db")
@@ -85,3 +94,34 @@ class Timetable:
 			cur.execute(f"""INSERT INTO homework VALUES
 								({task[0].name}, {task[0].homework}, {task[1].strftime("%d-%m-%Y")})""")
 		cur.commit()
+
+	def update(self):
+		pass
+
+	def when(self):
+		weekday = datetime.now().weekday()
+		if weekday == 0:
+			return self.monday[-1].end() if self.monday else (0, 0)
+		if weekday == 1:
+			return self.tuesday[-1].end() if self.tuesday else (0, 0)
+		if weekday == 2:
+			return self.wednesday[-1].end() if self.wednesday else (0, 0)
+		if weekday == 3:
+			return self.thursday[-1].end() if self.thursday else (0, 0)
+		if weekday == 4:
+			return self.friday[-1].end() if self.friday else (0, 0)
+		if weekday == 5:
+			return self.saturday[-1].end() if self.saturday else (0, 0)
+		return (0, 0)
+
+	def hw_to_date(self, date):
+		tasks = []
+		for task in self.hemework:
+			if date < task[1] < date + delta(1):
+				tasks.append(task[0].as_tuple())
+
+	def nearest_hw(self):
+		now = datetime.now()
+		end = self.when()
+		if now.hour > end[0] and now.minute > end[1]:
+			return self.hw_to_date(datetime(now.year, now.month, now.day) + delta(1))

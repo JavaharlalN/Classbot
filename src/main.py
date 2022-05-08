@@ -1,7 +1,8 @@
 import vk_api, datetime
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
-from query import match as check
+import query
 from functions import longpoll
+from data import Timetable
 
 # def change_percentage(event):
 #	 hm = (datetime.datetime.now() + datetime.timedelta(hours=6) - datetime.datetime(2021, 9, 1)).total_seconds() / 31536000
@@ -21,13 +22,14 @@ from functions import longpoll
 while True:
 	now = datetime.datetime.now() + datetime.timedelta(hours=3)
 	print(now)
+	timetable = Timetable.default()
 	try:
 		for event in longpoll.check():
 			try:
 				if event.type == VkBotEventType.MESSAGE_NEW:
 					print(event.chat_id)
 					msg = event.message["text"].lower()
-					check(event.chat_id, msg)
+					query.match(event.chat_id, msg, timetable)
 			except Exception as exexex:
 				print(exexex)
 	except KeyboardInterrupt:

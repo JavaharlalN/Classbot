@@ -38,3 +38,7 @@ def persentage(chat_id):
 		sender(chat_id, "Ну вот и всё, прощай лето... 100%")
 	else:
 		sender(chat_id, str(hm * 100) + '%')
+
+def nearest_hw(timetable):
+	timetable.update()
+	return timetable.nearest_hw()
