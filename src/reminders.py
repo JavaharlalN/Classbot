@@ -1,3 +1,4 @@
+from datetime import datetime, time
 import sqlite3
 
 
@@ -16,7 +17,13 @@ class Reminders:
 		cur.execute(f"""CREATE TABLE IF NOT EXIST periodic
 							(value text, time text)""")
 		cur.commit()
-		for lesson in self.monday:
-			cur.execute(f"""INSERT INTO reminders VALUES ("Понедельник", {lesson.name})""")
+		for r in self.reminders:
+			dt = datetime(2000, r[1][1], r[1][0], r[3][0], r[3][1])
+			df = datetime.strftime(dt, "%d/%m")
+			tf = datetime.strftime(dt, "%H.%M")
+			cur.execute(f"""INSERT INTO reminders VALUES ({r[0]}, {df}, {tf})""")
+		for r in self.periodic:
+			tf = datetime.strftime(time(r[2][0], r[2][1]), "%H.%M")
+			cur.execute(f"INSERT INTO periodic VALUES ({r[0]}, {tf})")
 		cur.commit()
 		con.close()
