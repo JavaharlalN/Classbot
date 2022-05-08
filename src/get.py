@@ -39,6 +39,8 @@ def persentage(chat_id):
 	else:
 		sender(chat_id, str(hm * 100) + '%')
 
-def nearest_hw(timetable):
+def nearest_hw(chat_id, timetable):
 	timetable.update()
-	return timetable.nearest_hw()
+	hw = timetable.nearest_hw()
+	if hw:
+		sender(chat_id, "\n".join(f"{t[0]}, {t[1]}" for t in hw))

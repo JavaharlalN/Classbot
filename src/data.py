@@ -119,6 +119,8 @@ class Timetable:
 		for task in self.hemework:
 			if date < task[1] < date + delta(1):
 				tasks.append(task[0].as_tuple())
+		return tasks
+		
 
 	def nearest_hw(self):
 		now = datetime.now()
