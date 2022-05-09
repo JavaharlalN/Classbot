@@ -1,11 +1,11 @@
-import get
+import get, set
 
 
 def match(chat_id, msg, timetable, reminders):
 	if msg.startswith('?'):
 		match_get(chat_id, msg[1:], timetable, reminders)
 	elif msg.startswith('!'):
-		pass
+		match_set(chat_id, msg[1:])
 
 
 def match_get(chat_id, query, timetable, reminders):
@@ -21,3 +21,10 @@ def match_get(chat_id, query, timetable, reminders):
 		get.reminders(chat_id, reminders)
 	elif query in get.weekdays:
 		get.timetable(chat_id, get.weekdays[query], timetable)
+
+
+def  match_set(chat_id, query):
+	if query in ("тихо", "остановись", "хватит", "заткнись"):
+		set.stop_game(chat_id)
+	if query in ("игра", "громко"):
+		set.start_game(chat_id)

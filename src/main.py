@@ -19,7 +19,6 @@ from reminders import Reminders
 #			 vk_session.method("messages.editChat", {"chat_id": event.chat_id, "title": f"С&#861;&#834;&#789;&#775;&#781;&#790;&#827;&#803;&#792;&#806;&#804;&#812;&#828;&#810;тальное M&#861;&#834;&#789;&#775;&#781;&#790;&#827;&#803;&#792;&#806;&#804;&#812;&#828;&#810;ыло №{10 + hm}"})
 #			 sender(event.chat_id, f"{hm * 100}%")
 
-
 while True:
 	now = datetime.datetime.now()
 	print(now)
@@ -32,7 +31,7 @@ while True:
 				if event.type == VkBotEventType.MESSAGE_NEW:
 					print(event.chat_id)
 					msg = event.message["text"].lower()
-					query.match(event.chat_id, msg, timetable, reminders)
+					query.match(event.chat_id, msg, timetable, reminders. is_game)
 			except Exception as exexex:
 				print(exexex)
 	except KeyboardInterrupt:
