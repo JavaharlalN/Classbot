@@ -26,5 +26,9 @@ def match_get(chat_id, query, timetable, reminders):
 def  match_set(chat_id, query):
 	if query in ("тихо", "остановись", "хватит", "заткнись"):
 		set.stop_game(chat_id)
-	if query in ("игра", "громко"):
+	elif query in ("игра", "громко"):
 		set.start_game(chat_id)
+	elif query == "сколько":
+		set.persentage(chat_id)
+	# elif query.split(' ')[0] == "формат":
+	# 	set.format(chat_id, ' '.join(query.split))

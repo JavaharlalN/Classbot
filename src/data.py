@@ -84,7 +84,7 @@ class Timetable:
 							(day text, lesson text)""")
 		cur.execute(f"""CREATE TABLE IF NOT EXIST homework
 							(lesson text, task text, date text)""")
-		cur.commit()
+		con.commit()
 		for lesson in self.monday:
 			cur.execute(f"""INSERT INTO timetable VALUES ("Понедельник", {lesson.name})""")
 		for lesson in self.tuesday:
@@ -100,7 +100,7 @@ class Timetable:
 		for task in self.homework:
 			cur.execute(f"""INSERT INTO homework VALUES
 								({task[0].name}, {task[0].homework}, {task[1].strftime("%d-%m-%Y")})""")
-		cur.commit()
+		con.commit()
 		con.close()
 
 	def update(self):
