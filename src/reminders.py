@@ -29,10 +29,13 @@ class Reminders:
 		con.close()
 
 	def add(self, value, time=(7, 0), period=None, date=None):
+		if not value:
+			return "не понял"
 		if period is None:
 			self.reminders.append((value, date, len(self.reminders), time))
-		else:
-			self.periodic.append((value, len(self.reminders), time))
+			return f"напоминание с индексом 0-{len(self.reminders) - 1} создано"
+		self.periodic.append((value, len(self.periodic), time))
+		return f"напоминание с индексом 1-{len(self.periodic) - 1} создано"
 
 	def update(self):
 		pass

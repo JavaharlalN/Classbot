@@ -3,9 +3,10 @@ class Game:
 		self.active = a
 
 	def reply(self, v):
-		if v.isdigit():
-			return str(int(v) + 1)
-		return "Вы проиграли"
+		try:
+			return str(float(v) + 1)
+		except Exception:
+			return "Вы проиграли"
 
 	def stop(self):
 		self.active = False

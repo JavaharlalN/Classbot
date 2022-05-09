@@ -1,6 +1,7 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import functions
 from game import game
+from calendar import monthrange as mrange
 
 
 def start_game(chat_id):
@@ -29,3 +30,23 @@ def persentage(chat_id):
 
 def format(chat_id, format):
 	functions.set_format(chat_id, format)
+
+
+def reminder(reminders, args):
+	today = datetime.today()
+	if len(args) == 2:
+		value, day = args
+		if int(day) <= today:
+			month = today.month + 1 - 12 * int(today.month == 12)
+			return reminders.add(value, date=(int(day), int(month)))
+		return reminders.add(value, date=(int(day), today.month))
+	elif len(args) == 3:
+		value, day, month = args
+		return reminders.add(value, date=(int(day), int(month)))
+	elif len(args) == 4:
+		value, day, month, hour = args
+		return reminders.add(value, date=(int(day), int(month)), time=(int(hour), 0))
+	elif len(args) == 5:
+		value, day, month, hour, minute = args
+		return reminders.add(value, (int(hour), int(minute)), date=(int(day), int(month)))
+	return "не понял"

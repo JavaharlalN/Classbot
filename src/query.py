@@ -1,3 +1,4 @@
+from functions import sender
 from game import game
 import get, set
 
@@ -6,9 +7,9 @@ def match(chat_id, msg, timetable, reminders):
 	if msg.startswith('?'):
 		match_get(chat_id, msg[1:], timetable, reminders)
 	elif msg.startswith('!'):
-		match_set(chat_id, msg[1:])
+		match_set(chat_id, msg[1:], reminders)
 	elif game.active:
-		game.reply(msg)
+		sender(chat_id, game.reply(msg))
 
 
 def match_get(chat_id, query, timetable, reminders):
@@ -26,7 +27,7 @@ def match_get(chat_id, query, timetable, reminders):
 		get.timetable(chat_id, get.weekdays[query], timetable)
 
 
-def  match_set(chat_id, query):
+def  match_set(chat_id, query, reminders):
 	if query in ("тихо", "остановись", "хватит", "заткнись"):
 		set.stop_game(chat_id)
 	elif query in ("игра", "громко"):
@@ -35,3 +36,8 @@ def  match_set(chat_id, query):
 		set.persentage(chat_id)
 	elif query.split(' ')[0] == "название":
 		set.format(chat_id, ' '.join(query.split(' ')[1:]))
+	elif query.startswith("напомнить"):
+		try:
+			sender(chat_id, set.reminder(reminders, query.split('.')))
+		except Exception:
+			sender(chat_id, "невозможно")
