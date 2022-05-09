@@ -50,3 +50,18 @@ def reminder(reminders, args):
 		value, day, month, hour, minute = args
 		return reminders.add(value, (int(hour), int(minute)), date=(int(day), int(month)))
 	return "не понял"
+
+
+def periodic(reminders, args):
+	today = datetime.today()
+	if len(args) == 1:
+		return reminders.add(args[0], period=1)
+	elif len(args) == 2:
+		return reminders.add(args[0], period=int(args[1]))
+	elif len(args) == 3:
+		value, period, hour = args
+		return reminders.add(value, (int(hour), 0), int(period))
+	elif len(args) == 4:
+		v, p, h, m = args
+		return reminders.add(v, (int(h), int(m)), int(p))
+	return "не понял"

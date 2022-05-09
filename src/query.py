@@ -28,16 +28,18 @@ def match_get(chat_id, query, timetable, reminders):
 
 
 def  match_set(chat_id, query, reminders):
-	if query in ("тихо", "остановись", "хватит", "заткнись"):
-		set.stop_game(chat_id)
-	elif query in ("игра", "громко"):
-		set.start_game(chat_id)
-	elif query == "сколько":
-		set.persentage(chat_id)
-	elif query.split(' ')[0] == "название":
-		set.format(chat_id, ' '.join(query.split(' ')[1:]))
-	elif query.startswith("напомнить"):
-		try:
-			sender(chat_id, set.reminder(reminders, query.split('.')))
-		except Exception:
-			sender(chat_id, "невозможно")
+	try:
+		if query in ("тихо", "остановись", "хватит", "заткнись"):
+			set.stop_game(chat_id)
+		elif query in ("игра", "громко"):
+			set.start_game(chat_id)
+		elif query == "сколько":
+			set.persentage(chat_id)
+		elif query.split(' ')[0] == "название":
+			set.format(chat_id, ' '.join(query.split(' ')[1:]))
+		elif query.startswith("напомнить"):
+			sender(chat_id, set.reminder(reminders, query.split('.')[1:]))
+		elif query.startswith("напоминать"):
+			sender(chat_id, set.periodic(reminders, query.split('.')[1:]))
+	except Exception:
+		sender(chat_id, "невозможно")
