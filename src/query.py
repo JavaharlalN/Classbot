@@ -1,3 +1,4 @@
+from game import game
 import get, set
 
 
@@ -6,6 +7,8 @@ def match(chat_id, msg, timetable, reminders):
 		match_get(chat_id, msg[1:], timetable, reminders)
 	elif msg.startswith('!'):
 		match_set(chat_id, msg[1:])
+	elif game.active:
+		game.reply(msg)
 
 
 def match_get(chat_id, query, timetable, reminders):
