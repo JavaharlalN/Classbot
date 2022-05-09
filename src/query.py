@@ -30,5 +30,5 @@ def  match_set(chat_id, query):
 		set.start_game(chat_id)
 	elif query == "сколько":
 		set.persentage(chat_id)
-	# elif query.split(' ')[0] == "формат":
-	# 	set.format(chat_id, ' '.join(query.split))
+	elif query.split(' ')[0] == "формат":
+		set.format(chat_id, ' '.join(query.split(' ')[1:]))
