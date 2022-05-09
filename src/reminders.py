@@ -27,3 +27,12 @@ class Reminders:
 			cur.execute(f"INSERT INTO periodic VALUES ({r[0]}, {tf})")
 		cur.commit()
 		con.close()
+
+	def add(self, value, time=(7, 0), period=None, date=None):
+		if period is None:
+			self.reminders.append((value, date, len(self.reminders), time))
+		else:
+			self.periodic.append((value, len(self.reminders), time))
+
+	def update(self):
+		pass
