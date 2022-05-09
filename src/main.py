@@ -3,6 +3,7 @@ from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 import query
 from functions import longpoll
 from data import Timetable
+from reminders import Reminders
 
 # def change_percentage(event):
 #	 hm = (datetime.datetime.now() + datetime.timedelta(hours=6) - datetime.datetime(2021, 9, 1)).total_seconds() / 31536000
@@ -24,13 +25,14 @@ while True:
 	print(now)
 	print(str((datetime.datetime.now() - datetime.datetime(2021, 9, 1)).total_seconds() / 315360) + '%')
 	timetable = Timetable()
+	reminders = Reminders()
 	try:
 		for event in longpoll.check():
 			try:
 				if event.type == VkBotEventType.MESSAGE_NEW:
 					print(event.chat_id)
 					msg = event.message["text"].lower()
-					query.match(event.chat_id, msg, timetable)
+					query.match(event.chat_id, msg, timetable, reminders)
 			except Exception as exexex:
 				print(exexex)
 	except KeyboardInterrupt:

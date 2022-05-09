@@ -36,3 +36,14 @@ class Reminders:
 
 	def update(self):
 		pass
+
+	def get(self):
+		reminders = []
+		for r in self.reminders:
+			d = f"{str(r[1][0]).rjust(2)}, {str(r[1][1]).rjust(2)}"
+			t = f"{str(r[3][0]).rjust(2)}.{str(r[3][1]).rjust(2)}"
+			reminders.append(f"{r[0]} {d} {r[2]} {t}")
+		for r in self.periodic:
+			t = f"{str(r[2][0]).rjust(2)}.{str(r[2][1]).rjust(2)}"
+			reminders.append(f"{r[0]} {r[1]} {t}")
+		return reminders

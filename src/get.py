@@ -36,11 +36,11 @@ weekdays = {
 	"пт": 4,
 	"сб": 5,
 	"понедельник": 0,
-	"вторник": 1,
-	"среда": 2,
-	"четверг": 3,
-	"пятница": 4,
-	"суббота": 5,
+	"вторник":     1,
+	"среда":       2,
+	"четверг":     3,
+	"пятница":     4,
+	"суббота":     5,
 }
 
 
@@ -105,3 +105,12 @@ def homework(chat_id, timetable, parameters):
 		sender(chat_id, "\n".join(map(lambda t: f"{t[0]}, {t[1]}", hw)))
 	else:
 		sender(chat_id, "не задано")
+
+
+def reminders(chat_id, reminders):
+	rs = reminders.get()
+	if rs:
+		sender(chat_id, '\n'.join(rs))
+	else:
+		sender(chat_id, "не найдено")
+
