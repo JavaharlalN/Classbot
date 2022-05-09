@@ -114,3 +114,6 @@ def reminders(chat_id, reminders):
 	else:
 		sender(chat_id, "не найдено")
 
+
+def timetable(chat_id, weekday, timetable):
+	sender(chat_id, '\n'.split(timetable.get_tt_by_id(weekday)))

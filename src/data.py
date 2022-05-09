@@ -16,6 +16,10 @@ class Lesson:
 	def as_tuple(self):
 		return (self.name, self.homework)
 
+	def formatted(self):
+		t = map(lambda i: str(i).rjust(2), self.start)
+		return f"{t[0]}:{t[1]} {self.name}" + f" - {self.homework}" if self.homework else ""
+
 
 class Timetable:
 	def __init__(self):
@@ -134,3 +138,16 @@ class Timetable:
 
 	def select(self, lesson, homework):
 		[t[0].as_tuple() for t in homework if t[0].name == lesson]
+
+	def get_tt_by_id(self, id):
+		if id == 0:
+			return [l.formatted() for l in self.monday]
+		if id == 1:
+			return [l.formatted() for l in self.tuesday]
+		if id == 2:
+			return [l.formatted() for l in self.wednesday]
+		if id == 3:
+			return [l.formatted() for l in self.thursday]
+		if id == 4:
+			return [l.formatted() for l in self.friday]
+		return [l.formatted() for l in self.saturday]

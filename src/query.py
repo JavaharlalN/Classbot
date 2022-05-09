@@ -19,3 +19,5 @@ def match_get(chat_id, query, timetable, reminders):
 		get.homework(chat_id, timetable, query.split('.')[1:])
 	elif query == "напоминания":
 		get.reminders(chat_id, reminders)
+	elif query in get.weekdays:
+		get.timetable(chat_id, get.weekdays[query], timetable)
