@@ -53,7 +53,6 @@ def reminder(reminders, args):
 
 
 def periodic(reminders, args):
-	today = datetime.today()
 	if len(args) == 1:
 		return reminders.add(args[0], period=1)
 	elif len(args) == 2:
@@ -65,3 +64,11 @@ def periodic(reminders, args):
 		v, p, h, m = args
 		return reminders.add(v, (int(h), int(m)), int(p))
 	return "не понял"
+
+
+def homework(chat_id, args, timetable):
+	if len(args) == 2:
+		functions.sender(chat_id, timetable.add_next(args[0], args[1]))
+	elif len(args) == 4:
+		l, d, m, v = args
+		functions.sender(chat_id, timetable.add(l, d, m, v))

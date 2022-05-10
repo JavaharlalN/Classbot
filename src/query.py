@@ -4,10 +4,11 @@ import get, set
 
 
 def match(chat_id, msg, timetable, reminders):
+	msg = msg.lower()
 	if msg.startswith('?'):
 		match_get(chat_id, msg[1:], timetable, reminders)
 	elif msg.startswith('!'):
-		match_set(chat_id, msg[1:], reminders)
+		match_set(chat_id, msg[1:], reminders, timetable)
 	elif game.active:
 		sender(chat_id, game.reply(msg))
 
@@ -27,7 +28,7 @@ def match_get(chat_id, query, timetable, reminders):
 		get.timetable(chat_id, get.weekdays[query], timetable)
 
 
-def  match_set(chat_id, query, reminders):
+def  match_set(chat_id, query, reminders, timetable):
 	try:
 		if query in ("тихо", "остановись", "хватит", "заткнись"):
 			set.stop_game(chat_id)
@@ -41,5 +42,7 @@ def  match_set(chat_id, query, reminders):
 			sender(chat_id, set.reminder(reminders, query.split('.')[1:]))
 		elif query.startswith("напоминать"):
 			sender(chat_id, set.periodic(reminders, query.split('.')[1:]))
+		elif query.startswith("дз"):
+			set.homework(chat_id, query.split('.')[1:], timetable)
 	except Exception:
 		sender(chat_id, "невозможно")
