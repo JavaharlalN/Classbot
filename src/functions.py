@@ -1,10 +1,10 @@
 import sqlite3
 import vk_api
 from vk_api.bot_longpoll import VkBotLongPoll
-from topsecret import token, longpoll
+from topsecret import token, group_id
 
 vk_session = vk_api.VkApi(token=token)
-longpoll = VkBotLongPoll(vk_session, longpoll)
+longpoll = VkBotLongPoll(vk_session, group_id)
 
 
 def sender(cid, text):
