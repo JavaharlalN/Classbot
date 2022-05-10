@@ -30,3 +30,9 @@ def set_format(chat_id, format):
 	cur.execute(f"UPDATE chats SET format={format} WHERE chat_id={chat_id}")
 	con.commit()
 	con.close()
+
+
+def reminders_sender(reminders):
+	while True:
+		for i, r in reminders.reminders.enumerate():
+			pass
