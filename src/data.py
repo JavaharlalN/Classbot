@@ -5,12 +5,12 @@ from datetime import datetime, timedelta as delta
 class Lesson:
 	def __init__(self, name, start):
 		self.name = name
-		self.start = start
+		self.start = start  # (hour, minute)
 		self.homework = ""
 
 	def end(self):
-		h = self.start[0] + self.start[1] // 60  # hours
-		m = self.start[1] % 60  # minutes
+		h = self.start[0] + (self.start[1] + 40) // 60  # hours
+		m = (self.start[1] + 40) % 60  # minutes
 		return (h, m)
 
 	def as_tuple(self):
@@ -73,7 +73,7 @@ class Timetable:
 			Lesson("Практикум по математике", (14, 20)),
 		]
 		self.saturday = []
-		self.hemework = []  # tuple(Lesson, datetime.strptime(%d-%m-%Y))
+		self.hemework = []  # tuple(Lesson, date)
 
 	def save(self):
 		con = sqlite3.connect("data.db")
@@ -83,8 +83,8 @@ class Timetable:
 		cur.execute(f"""CREATE TABLE IF NOT EXIST timetable
 							(day text, lesson text)""")
 		cur.execute(f"""CREATE TABLE IF NOT EXIST homework
-							(lesson text, task text, date text)""")
-		cur.commit()
+							(lesson text, start text, task text, date text)""")
+		con.commit()
 		for lesson in self.monday:
 			cur.execute(f"""INSERT INTO timetable VALUES ("Понедельник", {lesson.name})""")
 		for lesson in self.tuesday:
@@ -98,10 +98,25 @@ class Timetable:
 		for lesson in self.saturdey:
 			cur.execute(f"""INSERT INTO timetable VALUES ("Суббота", {lesson.name})""")
 		for task in self.homework:
+			h = task[0].start[0]
+			m = task[0].start[1]
 			cur.execute(f"""INSERT INTO homework VALUES
-								({task[0].name}, {task[0].homework}, {task[1].strftime("%d-%m-%Y")})""")
-		cur.commit()
+								({task[0].name}, {h}:{m}, {task[0].homework}, {task[1].strftime("%d-%m-%Y")})""")
+		con.commit()
 		con.close()
+
+	# TODO: Add timetable
+	def load(self):
+		con = sqlite3.connect("data.db")
+		cur = con.cursor()
+		cur.execute("SELECT * FROM homework")
+		res = cur.fetchall()
+		cur.close()
+		self.homework = []
+		for line in res:
+			l = Lesson(line[0], tuple(line[1]))
+			l.homework = line[2]
+			self.homework.append((l, datetime.strptime(line[3], "%d-%m_%Y")))
 
 	def update(self):
 		pass
@@ -139,15 +154,57 @@ class Timetable:
 	def select(self, lesson, homework):
 		[t[0].as_tuple() for t in homework if t[0].name == lesson]
 
-	def get_tt_by_id(self, id):
+	def day(self, id):
 		if id == 0:
-			return [l.formatted() for l in self.monday]
+			return self.monday
 		if id == 1:
-			return [l.formatted() for l in self.tuesday]
+			return self.tuesday
 		if id == 2:
-			return [l.formatted() for l in self.wednesday]
+			return self.wednesday
 		if id == 3:
-			return [l.formatted() for l in self.thursday]
+			return self.thursday
 		if id == 4:
-			return [l.formatted() for l in self.friday]
-		return [l.formatted() for l in self.saturday]
+			return self.friday
+		if id == 5:
+			return self.saturday
+		return []
+
+	def get_tt_by_id(self, id):
+		return [l.formatted() for l in self.day(id)]
+
+	def add_next(self, lesson, value):
+		now = datetime.today()
+		wd = now.weekday()  # 0..7
+		need = None
+		start = None
+		for i in range(6):  # without sunday
+			for l in self.day(i):
+				if l.name.lower() == lesson:
+					need = i
+					start = l.start
+					break
+		if need is None or start is None:
+			return "невозможно"
+		diff = need - wd
+		dt = now + delta(diff) + 7 * int(diff <= 0)
+		l = Lesson(lesson.capitalize(), start)
+		l.homework = value
+		self.hemework.append((l, dt))
+		return "готово"
+
+	def add(self, lesson, day, month, value):
+		start = None
+		for i in range(6):  # without sunday
+			for l in self.day(i):
+				if l.name.lower() == lesson:
+					start = l.start
+					break
+		if start is None:
+			return "невозможно"
+		now = datetime.today()
+		month += int(day <= now.day)
+		year = now.year + int(month <= now.month)
+		dt = datetime(year, month, day)
+		l = Lesson(lesson.capitalize(), start)
+		self.hemework.append((l, dt))
+		return "готово"
