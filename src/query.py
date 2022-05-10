@@ -37,12 +37,13 @@ def  match_set(chat_id, query, reminders, timetable):
 		elif query == "сколько":
 			set.persentage(chat_id)
 		elif query.split(' ')[0] == "название":
-			set.format(chat_id, ' '.join(query.split(' ')[1:]))
+			set.name_format(chat_id, ' '.join(query.split(' ')[1:]))
 		elif query.startswith("напомнить"):
 			sender(chat_id, set.reminder(reminders, query.split('.')[1:]))
 		elif query.startswith("напоминать"):
 			sender(chat_id, set.periodic(reminders, query.split('.')[1:]))
 		elif query.startswith("дз"):
 			set.homework(chat_id, query.split('.')[1:], timetable)
-	except Exception:
+	except Exception as e:
+		print(e)
 		sender(chat_id, "невозможно")

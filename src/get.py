@@ -1,5 +1,5 @@
 from datetime import timedelta as delta
-import datetime
+import datetime as dt
 from functions import sender
 
 instruction = """Команды
@@ -49,7 +49,7 @@ def help(chat_id):
 
 
 def persentage(chat_id):
-	hm = (datetime.now() - datetime(2021, 9, 1)).total_seconds() / 31536000
+	hm = (dt.datetime.now() - dt.datetime(2021, 9, 1)).total_seconds() / 31536000
 	if hm >= 1:
 		sender(chat_id, "Ну вот и всё, прощай лето... 100%")
 	else:
@@ -64,7 +64,7 @@ def nearest_hw(chat_id, timetable):
 
 
 def homework(chat_id, timetable, parameters):
-	date = datetime.date.today()
+	date = dt.date.today()
 	if len(parameters) in (1, 2):
 		if parameters[0] == "завтра":
 			hw = timetable.hw_to_date(date + delta(1))
@@ -83,7 +83,7 @@ def homework(chat_id, timetable, parameters):
 		elif parameters[0].isdigit() and parameters[1].isdigit():
 			d = parameters[0]
 			m = parameters[1]
-			date_need = datetime.datetime(date.year + (1 if m < 6 else 0), m, d)
+			date_need = dt.datetime(date.year + (1 if m < 6 else 0), m, d)
 			sender(chat_id, timetable.hw_to_date(date + (date - date_need).days))
 			return
 		else:
@@ -94,7 +94,7 @@ def homework(chat_id, timetable, parameters):
 	elif len(parameters) == 3 and parameters[0].isdigit() and parameters[1].isdigit():
 		d = parameters[0]
 		m = parameters[1]
-		date_need = datetime.datetime(date.year + (1 if m < 6 else 0), m, d)
+		date_need = dt.datetime(date.year + (1 if m < 6 else 0), m, d)
 		h = timetable.hw_to_date(date + (date - date_need).days);
 		sender(chat_id, timetable.select(parameters[2], h))
 		return
@@ -116,4 +116,4 @@ def reminders(chat_id, reminders):
 
 
 def timetable(chat_id, weekday, timetable):
-	sender(chat_id, '\n'.split(timetable.get_tt_by_id(weekday)))
+	sender(chat_id, timetable.get_tt_by_id(weekday))

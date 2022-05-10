@@ -17,7 +17,7 @@ while True:
 				if event.type == VkBotEventType.MESSAGE_NEW:
 					print(event.chat_id)
 					msg = event.message["text"].lower()
-					query.match(event.chat_id, msg, timetable, reminders. is_game)
+					query.match(event.chat_id, msg, timetable, reminders)
 			except Exception as exexex:
 				print(exexex)
 	except KeyboardInterrupt:
