@@ -17,8 +17,8 @@ class Lesson:
 		return (self.name, self.homework)
 
 	def formatted(self):
-		t = map(lambda i: str(i).rjust(2), self.start)
-		return f"{t[0]}:{t[1]} {self.name}" + f" - {self.homework}" if self.homework else ""
+		t = list(map(lambda i: str(i).rjust(2, '0'), self.start))
+		return f"{t[0]}:{t[1]} {self.name}" + (f" - {self.homework}" if self.homework else "")
 
 
 class Timetable:
@@ -78,11 +78,11 @@ class Timetable:
 	def save(self):
 		con = sqlite3.connect("data.db")
 		cur = con.cursor()
-		cur.execute("TRUNCATE TABLE IF EXIST timetable")
-		cur.execute("TRUNCATE TABLE IF EXIST homework")
-		cur.execute(f"""CREATE TABLE IF NOT EXIST timetable
+		cur.execute("TRUNCATE TABLE IF EXISTS timetable")
+		cur.execute("TRUNCATE TABLE IF EXISTS homework")
+		cur.execute(f"""CREATE TABLE IF NOT EXISTS timetable
 							(day text, lesson text)""")
-		cur.execute(f"""CREATE TABLE IF NOT EXIST homework
+		cur.execute(f"""CREATE TABLE IF NOT EXISTS homework
 							(lesson text, start text, task text, date text)""")
 		con.commit()
 		for lesson in self.monday:
@@ -170,7 +170,9 @@ class Timetable:
 		return []
 
 	def get_tt_by_id(self, id):
-		return [l.formatted() for l in self.day(id)]
+		res = '\n'.join(l.formatted() for l in self.day(id))
+		print(res)
+		return res if res.strip() else "пусто"
 
 	def add_next(self, lesson, value):
 		now = datetime.today()

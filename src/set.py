@@ -21,14 +21,15 @@ def persentage(chat_id):
 		functions.sender(chat_id, str(hm * 100) + '%')
 	fmt = functions.get_format(chat_id)
 	if fmt:
+		print(fmt.format(str(hm)[2:]))
 		functions.vk_session.method("messages.editChat", {
 			"chat_id": chat_id,
-			"title": format(fmt, str(hm)[2:])
+			"title": format(fmt.format(str(hm)[2:]))
 		})
 	else:
 		functions.sender(chat_id, "формат не установлен")
 
-def format(chat_id, format):
+def name_format(chat_id, format):
 	functions.set_format(chat_id, format)
 
 
@@ -36,7 +37,7 @@ def reminder(reminders, args):
 	today = datetime.today()
 	if len(args) == 2:
 		value, day = args
-		if int(day) <= today:
+		if int(day) <= today.day:
 			month = today.month + 1 - 12 * int(today.month == 12)
 			return reminders.add(value, date=(int(day), int(month)))
 		return reminders.add(value, date=(int(day), today.month))

@@ -10,11 +10,11 @@ class Reminders:
 	def save(self):
 		con = sqlite3.connect("data.db")
 		cur = con.cursor()
-		cur.execute("TRUNCATE TABLE IF EXIST reminders")
-		cur.execute("TRUNCATE TABLE IF EXIST periodic")
-		cur.execute(f"""CREATE TABLE IF NOT EXIST reminders
+		cur.execute("TRUNCATE TABLE IF EXISTS reminders")
+		cur.execute("TRUNCATE TABLE IF EXISTS periodic")
+		cur.execute(f"""CREATE TABLE IF NOT EXISTS reminders
 							(value text, rid int, date text, time text)""")
-		cur.execute(f"""CREATE TABLE IF NOT EXIST periodic
+		cur.execute(f"""CREATE TABLE IF NOT EXISTS periodic
 							(value text, rid int, time text, period int)""")
 		con.commit()
 		for r in self.reminders:

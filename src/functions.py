@@ -1,10 +1,10 @@
 import sqlite3
 import vk_api
 from vk_api.bot_longpoll import VkBotLongPoll
-from topsecret import token, longpoll
+from topsecret import token, group_id
 
 vk_session = vk_api.VkApi(token=token)
-longpoll = VkBotLongPoll(vk_session, longpoll)
+longpoll = VkBotLongPoll(vk_session, group_id)
 
 
 def sender(cid, text):
@@ -14,19 +14,23 @@ def sender(cid, text):
 def get_format(chat_id):
 	con = sqlite3.connect("data.db")
 	cur = con.cursor()
-	cur.execute("CREATE TABLE IF NOT EXIST chats (format text, chat_id int)")
+	cur.execute("CREATE TABLE IF NOT EXISTS chats (format text, chat_id int)")
 	con.commit()
 	cur.execute(f"SELECT format FROM chats WHERE chat_id={chat_id}")
-	res = cur.fetchone()
+	res = cur.fetchall()
 	con.close()
-	return res
+	return res[-1][0] if res else ''
 
 
 def set_format(chat_id, format):
 	con = sqlite3.connect("data.db")
 	cur = con.cursor()
-	cur.execute("CREATE TABLE IF NOT EXIST chats (format text, chat_id int)")
+	cur.execute("CREATE TABLE IF NOT EXISTS chats (format text, chat_id int)")
 	con.commit()
-	cur.execute(f"UPDATE chats SET format={format} WHERE chat_id={chat_id}")
+	cur.execute(f"""INSERT INTO
+						chats
+					VALUES
+						(\"{format}\", {chat_id})""")
 	con.commit()
 	con.close()
+	sender(chat_id, "готово")
